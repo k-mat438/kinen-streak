@@ -9,13 +9,13 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { RelapseTrigger } from '../types';
+import { RelapseTrigger, RecoveryAction } from '../types';
 import { useI18n } from '../i18n';
 
 interface Props {
   visible: boolean;
   onClose: () => void;
-  onSubmit: (trigger?: RelapseTrigger, note?: string) => void;
+  onSubmit: (trigger?: RelapseTrigger, note?: string, recovery?: RecoveryAction) => void;
 }
 
 const TRIGGER_KEYS: RelapseTrigger[] = [
@@ -28,38 +28,72 @@ const TRIGGER_KEYS: RelapseTrigger[] = [
   'other',
 ];
 
+const RECOVERY_KEYS: RecoveryAction[] = [
+  'water',
+  'walk',
+  'breathe',
+  'call',
+  'chew',
+  'other',
+];
+
+type Step = 'trigger' | 'other-input' | 'recovery';
+
 export function RelapseTriggerModal({ visible, onClose, onSubmit }: Props) {
   const { t } = useI18n();
+  const [step, setStep] = useState<Step>('trigger');
+  const [selectedTrigger, setSelectedTrigger] = useState<RelapseTrigger | undefined>();
   const [otherNote, setOtherNote] = useState('');
-  const [showOtherInput, setShowOtherInput] = useState(false);
 
   const handleTriggerPress = (trigger: RelapseTrigger) => {
+    setSelectedTrigger(trigger);
     if (trigger === 'other') {
-      setShowOtherInput(true);
+      setStep('other-input');
     } else {
-      onSubmit(trigger);
-      resetState();
+      setStep('recovery');
     }
   };
 
   const handleOtherSubmit = () => {
-    onSubmit('other', otherNote);
+    setStep('recovery');
+  };
+
+  const handleRecoverySelect = (recovery: RecoveryAction) => {
+    onSubmit(selectedTrigger, otherNote, recovery);
     resetState();
   };
 
-  const handleSkip = () => {
-    onSubmit(undefined);
+  const handleSkipTrigger = () => {
+    setSelectedTrigger(undefined);
+    setStep('recovery');
+  };
+
+  const handleSkipRecovery = () => {
+    onSubmit(selectedTrigger, otherNote, undefined);
     resetState();
   };
 
   const resetState = () => {
+    setStep('trigger');
+    setSelectedTrigger(undefined);
     setOtherNote('');
-    setShowOtherInput(false);
   };
 
   const handleClose = () => {
     resetState();
     onClose();
+  };
+
+  const handleBack = () => {
+    if (step === 'recovery') {
+      if (selectedTrigger === 'other') {
+        setStep('other-input');
+      } else {
+        setStep('trigger');
+      }
+    } else if (step === 'other-input') {
+      setStep('trigger');
+    }
   };
 
   return (
@@ -74,29 +108,32 @@ export function RelapseTriggerModal({ visible, onClose, onSubmit }: Props) {
         style={styles.overlay}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>{t.trigger.title}</Text>
-          <Text style={styles.subtitle}>{t.trigger.optional}</Text>
-
-          {!showOtherInput ? (
+          {step === 'trigger' && (
             <>
-              <View style={styles.triggerList}>
+              <Text style={styles.title}>{t.trigger.title}</Text>
+              <Text style={styles.subtitle}>{t.trigger.optional}</Text>
+
+              <View style={styles.optionList}>
                 {TRIGGER_KEYS.map((key) => (
                   <TouchableOpacity
                     key={key}
-                    style={styles.triggerButton}
+                    style={styles.optionButton}
                     onPress={() => handleTriggerPress(key)}
                   >
-                    <Text style={styles.triggerText}>{t.trigger[key]}</Text>
+                    <Text style={styles.optionText}>{t.trigger[key]}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
 
-              <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+              <TouchableOpacity style={styles.skipButton} onPress={handleSkipTrigger}>
                 <Text style={styles.skipText}>{t.trigger.skip}</Text>
               </TouchableOpacity>
             </>
-          ) : (
+          )}
+
+          {step === 'other-input' && (
             <View style={styles.otherInputContainer}>
+              <Text style={styles.title}>{t.trigger.whatHappened}</Text>
               <TextInput
                 style={styles.otherInput}
                 placeholder={t.trigger.whatHappened}
@@ -106,21 +143,46 @@ export function RelapseTriggerModal({ visible, onClose, onSubmit }: Props) {
                 returnKeyType="done"
                 onSubmitEditing={handleOtherSubmit}
               />
-              <View style={styles.otherButtons}>
+              <View style={styles.buttonRow}>
                 <TouchableOpacity
-                  style={styles.otherCancelButton}
-                  onPress={() => setShowOtherInput(false)}
+                  style={styles.backButton}
+                  onPress={handleBack}
                 >
-                  <Text style={styles.otherCancelText}>{t.trigger.back}</Text>
+                  <Text style={styles.backButtonText}>{t.trigger.back}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.otherSubmitButton}
+                  style={styles.submitButton}
                   onPress={handleOtherSubmit}
                 >
-                  <Text style={styles.otherSubmitText}>{t.trigger.done}</Text>
+                  <Text style={styles.submitButtonText}>{t.trigger.done}</Text>
                 </TouchableOpacity>
               </View>
             </View>
+          )}
+
+          {step === 'recovery' && (
+            <>
+              <Text style={styles.title}>{t.recovery.title}</Text>
+              <Text style={styles.subtitle}>{t.recovery.subtitle}</Text>
+
+              <View style={styles.optionList}>
+                {RECOVERY_KEYS.map((key) => (
+                  <TouchableOpacity
+                    key={key}
+                    style={styles.optionButton}
+                    onPress={() => handleRecoverySelect(key)}
+                  >
+                    <Text style={styles.optionText}>{t.recovery[key]}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View style={styles.recoveryButtonRow}>
+                <TouchableOpacity style={styles.skipButton} onPress={handleSkipRecovery}>
+                  <Text style={styles.skipText}>{t.recovery.skip}</Text>
+                </TouchableOpacity>
+              </View>
+            </>
           )}
         </View>
       </KeyboardAvoidingView>
@@ -142,7 +204,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '600',
     color: '#1A1A1A',
     textAlign: 'center',
@@ -152,20 +214,22 @@ const styles = StyleSheet.create({
     color: '#999',
     textAlign: 'center',
     marginBottom: 24,
+    marginTop: 4,
   },
-  triggerList: {
+  optionList: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 12,
-    marginBottom: 24,
+    justifyContent: 'center',
+    marginBottom: 16,
   },
-  triggerButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+  optionButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 24,
     backgroundColor: '#F5F5F5',
     borderRadius: 24,
   },
-  triggerText: {
+  optionText: {
     fontSize: 16,
     color: '#333',
   },
@@ -187,33 +251,37 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 16,
+    marginTop: 16,
     marginBottom: 16,
   },
-  otherButtons: {
+  buttonRow: {
     flexDirection: 'row',
     gap: 12,
   },
-  otherCancelButton: {
+  backButton: {
     flex: 1,
     paddingVertical: 14,
     alignItems: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
   },
-  otherCancelText: {
+  backButtonText: {
     fontSize: 16,
     color: '#666',
   },
-  otherSubmitButton: {
+  submitButton: {
     flex: 1,
     paddingVertical: 14,
     alignItems: 'center',
     backgroundColor: '#1A1A1A',
     borderRadius: 12,
   },
-  otherSubmitText: {
+  submitButtonText: {
     fontSize: 16,
     color: '#FFF',
     fontWeight: '600',
+  },
+  recoveryButtonRow: {
+    marginTop: 8,
   },
 });

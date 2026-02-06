@@ -1,27 +1,25 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import {
   AppData,
-  DayRecord,
   DEFAULT_APP_DATA,
+  QuitReason,
   RelapseTrigger,
+  RecoveryAction,
   Settings,
   Stats,
 } from '../types';
 import { loadAppData, saveAppData, resetAllData } from '../utils/storage';
-import { calculateStats, getTodayStatus } from '../utils/stats';
-import { getLogicalDate } from '../utils/date';
+import { calculateStats } from '../utils/stats';
 
 interface AppDataContextType {
   data: AppData;
   stats: Stats;
-  todayRecord: DayRecord | null;
-  todayDate: string;
   isLoading: boolean;
-  recordSmokeFree: () => Promise<void>;
-  recordRelapse: (trigger?: RelapseTrigger, note?: string) => Promise<void>;
+  isStarted: boolean;
+  startChallenge: (reason: QuitReason, goalDays: number) => Promise<void>;
+  recordRelapse: (trigger?: RelapseTrigger, note?: string, recovery?: RecoveryAction) => Promise<void>;
   updateSettings: (settings: Partial<Settings>) => Promise<void>;
   resetData: () => Promise<void>;
-  refreshData: () => Promise<void>;
 }
 
 const AppDataContext = createContext<AppDataContextType | null>(null);
@@ -39,55 +37,48 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Computed values
-  const stats = calculateStats(data.records, data.settings);
-  const todayRecord = getTodayStatus(data.records, data.settings);
-  const todayDate = getLogicalDate(data.settings);
+  const stats = calculateStats(data);
+  const isStarted = data.startTimestamp !== null;
 
-  // Record smoke-free day
-  const recordSmokeFree = useCallback(async () => {
-    const today = getLogicalDate(data.settings);
-    const newRecord: DayRecord = {
-      date: today,
-      status: 'smoke-free',
-      recordedAt: Date.now(),
-    };
-
+  // Start the challenge (first time or after reset)
+  const startChallenge = useCallback(async (reason: QuitReason, goalDays: number) => {
     const newData: AppData = {
       ...data,
-      records: {
-        ...data.records,
-        [today]: newRecord,
-      },
+      startTimestamp: Date.now(),
+      quitReason: reason,
+      goalDays,
     };
 
     setData(newData);
     await saveAppData(newData);
   }, [data]);
 
-  // Record relapse
+  // Record relapse - resets the timer
   const recordRelapse = useCallback(
-    async (trigger?: RelapseTrigger, note?: string) => {
-      const today = getLogicalDate(data.settings);
-      const newRecord: DayRecord = {
-        date: today,
-        status: 'relapse',
-        trigger,
-        triggerNote: trigger === 'other' ? note : undefined,
-        recordedAt: Date.now(),
-      };
+    async (trigger?: RelapseTrigger, note?: string, recovery?: RecoveryAction) => {
+      if (data.startTimestamp === null) return;
+
+      const currentStreak = stats.currentStreak;
 
       const newData: AppData = {
         ...data,
-        records: {
-          ...data.records,
-          [today]: newRecord,
-        },
+        startTimestamp: Date.now(), // Reset timer to now
+        relapses: [
+          ...data.relapses,
+          {
+            timestamp: Date.now(),
+            trigger,
+            triggerNote: trigger === 'other' ? note : undefined,
+            recoveryAction: recovery,
+            streakDays: currentStreak,
+          },
+        ],
       };
 
       setData(newData);
       await saveAppData(newData);
     },
-    [data]
+    [data, stats.currentStreak]
   );
 
   // Update settings
@@ -113,25 +104,17 @@ export function AppDataProvider({ children }: { children: React.ReactNode }) {
     setData(DEFAULT_APP_DATA);
   }, []);
 
-  // Refresh data from storage
-  const refreshData = useCallback(async () => {
-    const loaded = await loadAppData();
-    setData(loaded);
-  }, []);
-
   return (
     <AppDataContext.Provider
       value={{
         data,
         stats,
-        todayRecord,
-        todayDate,
         isLoading,
-        recordSmokeFree,
+        isStarted,
+        startChallenge,
         recordRelapse,
         updateSettings,
         resetData: resetDataFn,
-        refreshData,
       }}
     >
       {children}

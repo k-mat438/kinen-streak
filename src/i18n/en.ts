@@ -1,24 +1,38 @@
 export const en = {
   // Home Screen
   home: {
-    daysSmokeFree: 'days smoke-free',
-    newStartToday: 'New start today',
-    notRecordedToday: "You haven't recorded today",
-    smokeFreeToday: 'Smoke-free today',
-    relapseToday: 'Relapse today',
-    recordedSmokeFree: 'Recorded: Smoke-free today',
-    recordedRelapse: 'Recorded: Relapse today',
-    recorded: 'Recorded',
-    changeToSmokeFree: 'Change to smoke-free',
-    changeToRelapse: 'Change to relapse',
-    bestStreak: 'Best streak',
-    totalSmokeFree: 'Total smoke-free',
+    welcomeTitle: 'Ready to quit smoking?',
+    welcomeSubtitle: 'Start your journey. Track how long you can go without a cigarette.',
+    startChallenge: 'Start Now',
+    days: 'days',
+    timerHours: 'hrs',
+    timerMinutes: 'min',
+    timerSeconds: 'sec',
+    bestStreak: 'Best',
+    totalCleanDays: 'Total',
     relapses: 'Relapses',
-    dayResetsAt: 'Day resets at',
-    motivationText: 'Current streak is built one day at a time',
-    changeRecordTitle: 'Change record?',
-    changeRecordMessage:
-      'You recorded a relapse today. Are you sure you want to change this?',
+    iSmoked: 'I smoked',
+    motivationText: 'Every second counts',
+    goalProgress: 'Goal',
+    daysLeft: 'days left',
+    goalReached: 'Goal reached!',
+  },
+
+  // Start Challenge Modal
+  start: {
+    reasonTitle: 'Why do you want to quit?',
+    reasonSubtitle: 'Choose your motivation',
+    health: 'Health',
+    money: 'Save money',
+    family: 'Family',
+    smell: 'Smell better',
+    freedom: 'Freedom',
+    fitness: 'Fitness',
+    other: 'Other',
+    goalTitle: 'Set your goal',
+    goalSubtitle: 'How many days?',
+    days: 'days',
+    letsGo: "Let's go!",
   },
 
   // Relapse Trigger Modal
@@ -38,30 +52,39 @@ export const en = {
     done: 'Done',
   },
 
+  // Recovery Action Modal
+  recovery: {
+    title: "What will you do now?",
+    subtitle: 'Pick one to reset stronger',
+    water: 'Drink water',
+    walk: 'Take a walk',
+    breathe: 'Deep breaths',
+    call: 'Call someone',
+    chew: 'Chew gum',
+    other: 'Something else',
+    skip: 'Skip',
+    restart: 'Restart',
+  },
+
   // History Screen
   history: {
     title: 'History',
-    noRecords: 'No records yet',
-    startTracking: 'Start tracking from the home screen',
-    smokeFree: 'Smoke-free',
+    noRelapses: 'No relapses yet',
+    keepGoing: 'Keep going!',
     relapse: 'Relapse',
+    streakWas: 'streak was',
+    days: 'days',
   },
 
   // Settings Screen
   settings: {
     title: 'Settings',
-    dayBoundary: 'Day Boundary',
-    dayResetsAt: 'Day resets at',
-    dayBoundaryHint:
-      "Set when your \"day\" starts. Useful if you're often awake past midnight.",
-    changeBoundaryTitle: 'Change day boundary?',
-    changeBoundaryMessage: 'This may affect how your current day is calculated.',
     data: 'Data',
     exportData: 'Export data (JSON)',
     resetAllData: 'Reset all data',
     resetTitle: 'Reset all data?',
     resetMessage:
-      'This will delete all your records and settings. This cannot be undone.',
+      'This will delete all your records and start fresh. This cannot be undone.',
     resetConfirm: 'Reset',
     dataReset: 'Data reset',
     dataCleared: 'All data has been cleared.',

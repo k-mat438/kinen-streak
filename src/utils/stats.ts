@@ -1,74 +1,37 @@
-import { DayRecord, Settings, Stats } from '../types';
-import { getLogicalDate, getPreviousDate } from './date';
+import { AppData, Stats } from '../types';
+import { calculateDaysFromTimestamp } from './date';
 
-// Calculate all stats from records
-export function calculateStats(
-  records: Record<string, DayRecord>,
-  settings: Settings
-): Stats {
-  const today = getLogicalDate(settings);
-  const todayRecord = records[today];
+// Calculate all stats from app data
+export function calculateStats(data: AppData): Stats {
+  const { startTimestamp, relapses } = data;
 
-  // Count total smoke-free days and relapses
-  let totalSmokeFree = 0;
-  let relapseCount = 0;
-
-  Object.values(records).forEach((record) => {
-    if (record.status === 'smoke-free') {
-      totalSmokeFree++;
-    } else if (record.status === 'relapse') {
-      relapseCount++;
-    }
-  });
-
-  // Calculate current streak (consecutive smoke-free days ending today)
-  let currentStreak = 0;
-  if (todayRecord?.status === 'smoke-free') {
-    currentStreak = 1;
-    let checkDate = getPreviousDate(today);
-    while (records[checkDate]?.status === 'smoke-free') {
-      currentStreak++;
-      checkDate = getPreviousDate(checkDate);
-    }
+  // If not started yet
+  if (startTimestamp === null) {
+    return {
+      currentStreak: 0,
+      bestStreak: 0,
+      totalCleanDays: 0,
+      relapseCount: 0,
+    };
   }
 
-  // Calculate best streak (longest consecutive smoke-free sequence)
-  const bestStreak = calculateBestStreak(records);
+  // Current streak = days since start timestamp
+  const currentStreak = calculateDaysFromTimestamp(startTimestamp);
+
+  // Best streak = max of current streak and all past streaks
+  const pastStreaks = relapses.map((r) => r.streakDays);
+  const bestStreak = Math.max(currentStreak, ...pastStreaks, 0);
+
+  // Total clean days = current streak + sum of all past streaks
+  const totalCleanDays = currentStreak + pastStreaks.reduce((sum, days) => sum + days, 0);
+
+  // Relapse count
+  const relapseCount = relapses.length;
 
   return {
     currentStreak,
-    bestStreak: Math.max(bestStreak, currentStreak),
-    totalSmokeFree,
+    bestStreak,
+    totalCleanDays,
     relapseCount,
   };
-}
-
-// Find the longest streak in history
-function calculateBestStreak(records: Record<string, DayRecord>): number {
-  const sortedDates = Object.keys(records).sort();
-  if (sortedDates.length === 0) return 0;
-
-  let bestStreak = 0;
-  let currentStreak = 0;
-
-  for (const date of sortedDates) {
-    const record = records[date];
-    if (record.status === 'smoke-free') {
-      currentStreak++;
-      bestStreak = Math.max(bestStreak, currentStreak);
-    } else {
-      currentStreak = 0;
-    }
-  }
-
-  return bestStreak;
-}
-
-// Get today's status
-export function getTodayStatus(
-  records: Record<string, DayRecord>,
-  settings: Settings
-): DayRecord | null {
-  const today = getLogicalDate(settings);
-  return records[today] || null;
 }

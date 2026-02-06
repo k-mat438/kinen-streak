@@ -10,41 +10,13 @@ import {
 } from 'react-native';
 import { useAppData } from '../hooks/useAppData';
 import { useI18n, LANGUAGE_NAMES } from '../i18n';
-import { formatBoundaryTime } from '../utils/date';
 import { exportDataAsJson } from '../utils/storage';
-import { TimePicker } from '../components/TimePicker';
 import { LanguagePicker } from '../components/LanguagePicker';
 
 export function SettingsScreen() {
-  const { data, updateSettings, resetData } = useAppData();
+  const { data, resetData } = useAppData();
   const { t, language } = useI18n();
-  const [showTimePicker, setShowTimePicker] = useState(false);
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
-
-  const boundaryTime = formatBoundaryTime(
-    data.settings.dayBoundaryHour,
-    data.settings.dayBoundaryMinute
-  );
-
-  const handleTimeChange = async (hour: number, minute: number) => {
-    Alert.alert(
-      t.settings.changeBoundaryTitle,
-      t.settings.changeBoundaryMessage,
-      [
-        { text: t.common.cancel, style: 'cancel' },
-        {
-          text: t.common.change,
-          onPress: async () => {
-            await updateSettings({
-              dayBoundaryHour: hour,
-              dayBoundaryMinute: minute,
-            });
-            setShowTimePicker(false);
-          },
-        },
-      ]
-    );
-  };
 
   const handleExport = async () => {
     const json = exportDataAsJson(data);
@@ -90,19 +62,6 @@ export function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* Day Boundary Section */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t.settings.dayBoundary}</Text>
-        <TouchableOpacity
-          style={styles.settingRow}
-          onPress={() => setShowTimePicker(true)}
-        >
-          <Text style={styles.settingLabel}>{t.settings.dayResetsAt}</Text>
-          <Text style={styles.settingValue}>{boundaryTime}</Text>
-        </TouchableOpacity>
-        <Text style={styles.settingHint}>{t.settings.dayBoundaryHint}</Text>
-      </View>
-
       {/* Data Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.settings.data}</Text>
@@ -126,15 +85,6 @@ export function SettingsScreen() {
           <Text style={styles.versionText}>Version 1.0.0</Text>
         </View>
       </View>
-
-      {/* Time Picker Modal */}
-      <TimePicker
-        visible={showTimePicker}
-        currentHour={data.settings.dayBoundaryHour}
-        currentMinute={data.settings.dayBoundaryMinute}
-        onClose={() => setShowTimePicker(false)}
-        onSelect={handleTimeChange}
-      />
 
       {/* Language Picker Modal */}
       <LanguagePicker
@@ -186,12 +136,6 @@ const styles = StyleSheet.create({
   settingArrow: {
     fontSize: 16,
     color: '#CCC',
-  },
-  settingHint: {
-    fontSize: 13,
-    color: '#999',
-    marginLeft: 4,
-    marginTop: 4,
   },
   dangerRow: {
     marginTop: 8,

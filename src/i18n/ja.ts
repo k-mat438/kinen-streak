@@ -3,24 +3,38 @@ import { Translations } from './en';
 export const ja: Translations = {
   // Home Screen
   home: {
-    daysSmokeFree: '日間 禁煙継続',
-    newStartToday: '今日から再スタート',
-    notRecordedToday: '今日はまだ記録していません',
-    smokeFreeToday: '今日吸っていない',
-    relapseToday: '今日吸った',
-    recordedSmokeFree: '記録済み：今日は禁煙成功',
-    recordedRelapse: '記録済み：今日は再発',
-    recorded: '記録済み',
-    changeToSmokeFree: '禁煙成功に変更',
-    changeToRelapse: '再発に変更',
-    bestStreak: '最長記録',
-    totalSmokeFree: '累計禁煙日数',
-    relapses: '再発回数',
-    dayResetsAt: '日付の切り替え',
-    motivationText: '1日1日の積み重ねが記録になる',
-    changeRecordTitle: '記録を変更しますか？',
-    changeRecordMessage:
-      '今日は再発と記録されています。本当に変更しますか？',
+    welcomeTitle: '禁煙を始めますか？',
+    welcomeSubtitle: 'どれだけタバコなしで過ごせるか、チャレンジしよう。',
+    startChallenge: 'スタート',
+    days: '日',
+    timerHours: '時間',
+    timerMinutes: '分',
+    timerSeconds: '秒',
+    bestStreak: '最長',
+    totalCleanDays: '累計',
+    relapses: '再発',
+    iSmoked: '吸ってしまった',
+    motivationText: '1秒1秒が積み重なる',
+    goalProgress: '目標',
+    daysLeft: '日 残り',
+    goalReached: '目標達成！',
+  },
+
+  // Start Challenge Modal
+  start: {
+    reasonTitle: '禁煙したい理由は？',
+    reasonSubtitle: 'モチベーションを選ぼう',
+    health: '健康のため',
+    money: '節約したい',
+    family: '家族のため',
+    smell: 'ニオイが嫌',
+    freedom: '自由になりたい',
+    fitness: '体力向上',
+    other: 'その他',
+    goalTitle: '目標を設定',
+    goalSubtitle: '何日間チャレンジする？',
+    days: '日',
+    letsGo: 'スタート！',
   },
 
   // Relapse Trigger Modal
@@ -40,30 +54,39 @@ export const ja: Translations = {
     done: '完了',
   },
 
+  // Recovery Action Modal
+  recovery: {
+    title: '次に何をする？',
+    subtitle: '気持ちを切り替えよう',
+    water: '水を飲む',
+    walk: '散歩する',
+    breathe: '深呼吸',
+    call: '誰かに電話',
+    chew: 'ガムを噛む',
+    other: '別のこと',
+    skip: 'スキップ',
+    restart: '再スタート',
+  },
+
   // History Screen
   history: {
     title: '履歴',
-    noRecords: '記録がありません',
-    startTracking: 'ホーム画面から記録を始めましょう',
-    smokeFree: '禁煙成功',
+    noRelapses: 'まだ再発していません',
+    keepGoing: 'この調子！',
     relapse: '再発',
+    streakWas: '継続日数',
+    days: '日',
   },
 
   // Settings Screen
   settings: {
     title: '設定',
-    dayBoundary: '1日の区切り',
-    dayResetsAt: '日付の切り替え時刻',
-    dayBoundaryHint:
-      '「1日」の開始時刻を設定します。深夜まで起きていることが多い方に便利です。',
-    changeBoundaryTitle: '区切り時刻を変更しますか？',
-    changeBoundaryMessage: '今日の計算に影響する場合があります。',
     data: 'データ',
     exportData: 'データをエクスポート (JSON)',
     resetAllData: 'すべてのデータを削除',
     resetTitle: 'すべてのデータを削除しますか？',
     resetMessage:
-      'すべての記録と設定が削除されます。この操作は取り消せません。',
+      'すべての記録が削除され、最初からやり直しになります。この操作は取り消せません。',
     resetConfirm: '削除',
     dataReset: 'データ削除完了',
     dataCleared: 'すべてのデータが削除されました。',
