@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "react-native-expo-tutorial",
-    "slug": "react-native-expo-tutorial",
+    "name": "Kinen Streak",
+    "slug": "kinen-streak",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "react-native-expo-tutorial",
+    "scheme": "kinen-streak",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
