@@ -134,6 +134,8 @@ export interface Settings {
   dayBoundaryHour: number; // 0-23, hour when day resets
   dayBoundaryMinute: number; // 0 or 30
   vibrationEnabled: boolean; // Enable vibration on failure
+  soundEnabled: boolean; // Enable sound on goal completion
+  notificationsEnabled: boolean; // Enable push notifications
 }
 
 // App state stored in AsyncStorage
@@ -165,6 +167,8 @@ export const DEFAULT_SETTINGS: Settings = {
   dayBoundaryHour: 4,
   dayBoundaryMinute: 0,
   vibrationEnabled: false,
+  soundEnabled: true,
+  notificationsEnabled: true,
 };
 
 // Default app data

@@ -22,7 +22,16 @@ export function SettingsScreen() {
 
   const handleVibrationToggle = async (value: boolean) => {
     await updateSettings({ vibrationEnabled: value });
+  };
+
+  const handleSoundToggle = async (value: boolean) => {
+    await updateSettings({ soundEnabled: value });
+  };
+
+  const handleNotificationsToggle = async (value: boolean) => {
+    await updateSettings({ notificationsEnabled: value });
     if (value) {
+      // Open settings to enable notifications if needed
       Linking.openSettings();
     }
   };
@@ -62,6 +71,24 @@ export function SettingsScreen() {
       {/* General Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.settings.general}</Text>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>{t.settings.sound}</Text>
+          <Switch
+            value={data.settings.soundEnabled}
+            onValueChange={handleSoundToggle}
+            trackColor={{ false: '#DDD', true: '#1A1A1A' }}
+            thumbColor="#FFF"
+          />
+        </View>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>{t.settings.notifications}</Text>
+          <Switch
+            value={data.settings.notificationsEnabled}
+            onValueChange={handleNotificationsToggle}
+            trackColor={{ false: '#DDD', true: '#1A1A1A' }}
+            thumbColor="#FFF"
+          />
+        </View>
         <View style={styles.settingRow}>
           <Text style={styles.settingLabel}>{t.settings.vibration}</Text>
           <Switch

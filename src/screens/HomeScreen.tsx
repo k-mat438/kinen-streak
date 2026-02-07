@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,6 @@ import {
   ScrollView,
   Vibration,
   Switch,
-  Platform,
 } from 'react-native';
 import { useAudioPlayer } from 'expo-audio';
 import * as Notifications from 'expo-notifications';
@@ -23,7 +22,8 @@ import { TimerDisplay } from '../components/TimerDisplay';
 // Configure notification handler
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
   }),
@@ -52,8 +52,44 @@ export function HomeScreen() {
 
   const contract = data.contract;
 
+  // Random "try instead" actions for urge button (pick 2)
+  const randomUrgeActions = useMemo(() => {
+    const actions = [...t.recovery.urgeActions];
+    // Shuffle and pick 2
+    for (let i = actions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [actions[i], actions[j]] = [actions[j], actions[i]];
+    }
+    return actions.slice(0, 2);
+  }, [t]);
+
   // Preload success sound for instant playback
   const successPlayer = useAudioPlayer(require('../../assets/success.mp3'));
+
+  // Schedule notification when contract exists and goal not yet reached
+  useEffect(() => {
+    if (!contract) return;
+    if (!data.settings.notificationsEnabled) {
+      // Cancel any existing notifications if disabled
+      Notifications.cancelAllScheduledNotificationsAsync();
+      return;
+    }
+
+    const targetTimestamp = contract.granularity === 'hour' && contract.blockDurationMinutes
+      ? contract.startedAt + contract.blockDurationMinutes * 60 * 1000
+      : contract.startedAt + (contract.durationDays || 30) * 24 * 60 * 60 * 1000;
+
+    const now = Date.now();
+    if (now < targetTimestamp) {
+      // Goal not yet reached, schedule notification
+      scheduleGoalNotification(targetTimestamp);
+    }
+
+    // Cleanup: cancel notifications when contract changes or component unmounts
+    return () => {
+      Notifications.cancelAllScheduledNotificationsAsync();
+    };
+  }, [contract?.startedAt, contract?.blockDurationMinutes, contract?.durationDays, data.settings.notificationsEnabled]);
 
   const handleUrgePress = () => {
     setShowUrgeModal(true);
@@ -127,43 +163,80 @@ export function HomeScreen() {
 
   // Request notification permissions
   const requestNotificationPermission = async () => {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    if (existingStatus === 'granted') return true;
+
     const { status } = await Notifications.requestPermissionsAsync();
     return status === 'granted';
   };
 
-  // Send goal completed notification
-  const sendGoalNotification = async () => {
+  // Schedule notification for goal completion
+  const scheduleGoalNotification = async (targetTimestamp: number) => {
+    const hasPermission = await requestNotificationPermission();
+    if (!hasPermission) {
+      console.log('Notification permission not granted');
+      return;
+    }
+
+    // Cancel any existing scheduled notifications
+    await Notifications.cancelAllScheduledNotificationsAsync();
+
+    const behaviorName = getBehaviorDisplayName();
+    const now = Date.now();
+    const secondsUntilGoal = Math.max(1, Math.floor((targetTimestamp - now) / 1000));
+
+    // Schedule notification for when goal is reached
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: t.goal.completed,
+        body: `${behaviorName} ${t.goal.congratulations}`,
+        sound: true,
+      },
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
+        seconds: secondsUntilGoal,
+      },
+    });
+    console.log(`Notification scheduled for ${secondsUntilGoal} seconds from now`);
+  };
+
+  // Send immediate notification (for when app is in foreground)
+  const sendImmediateNotification = async () => {
     const hasPermission = await requestNotificationPermission();
     if (!hasPermission) return;
 
     const behaviorName = getBehaviorDisplayName();
-    const streak = contractStats?.currentStreak || 0;
-    const unit = contract?.granularity === 'day' ? t.home.days : t.home.blocks;
 
     await Notifications.scheduleNotificationAsync({
       content: {
         title: t.goal.completed,
-        body: `${behaviorName} - ${streak} ${unit} ${t.goal.congratulations}`,
+        body: `${behaviorName} ${t.goal.congratulations}`,
         sound: true,
       },
-      trigger: null, // Send immediately
+      trigger: null,
     });
   };
 
   // Play success sound and vibration
   const playSuccessSound = () => {
     // Vibration pattern: short-pause-short-pause-long (celebration pattern)
-    Vibration.vibrate([0, 100, 100, 100, 100, 300]);
+    if (data.settings.vibrationEnabled) {
+      Vibration.vibrate([0, 100, 100, 100, 100, 300]);
+    }
 
-    // Send notification (works best when app is in background)
-    sendGoalNotification();
+    // Send immediate notification (for foreground)
+    if (data.settings.notificationsEnabled) {
+      sendImmediateNotification();
+    }
 
     // Play preloaded sound instantly
-    try {
-      successPlayer.seekTo(0); // Reset to beginning if already played
-      successPlayer.play();
-    } catch (error) {
-      console.log('Success sound playback error:', error);
+    if (data.settings.soundEnabled) {
+      try {
+        successPlayer.seekTo(0); // Reset to beginning if already played
+        successPlayer.play();
+      } catch (error) {
+        console.log('Success sound playback error:', error);
+      }
     }
   };
 
@@ -263,7 +336,7 @@ export function HomeScreen() {
           style={styles.urgeButton}
           onPress={handleUrgePress}
         >
-          <Text style={styles.urgeButtonText}>{t.home.feelingUrge}</Text>
+          <Text style={styles.urgeButtonText}>{randomUrgeActions.join(' / ')}</Text>
         </TouchableOpacity>
 
         {/* Failure Button */}
