@@ -1,8 +1,8 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { I18nProvider } from './src/i18n';
-import { AppDataProvider } from './src/hooks/useAppData';
 import { Navigation } from './src/navigation';
+import { AppDataProvider } from './src/hooks/useAppData';
+import { I18nProvider } from './src/i18n';
 
 export default function App() {
   return (

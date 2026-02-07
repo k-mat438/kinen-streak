@@ -1,17 +1,17 @@
 {
   "expo": {
-    "name": "Kinen Streak",
-    "slug": "kinen-streak",
+    "name": "自分縛り ~Self Binding~",
+    "slug": "jibun-shibari",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "scheme": "kinen-streak",
+    "scheme": "jibun-shibari",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#1A1A1A"
     },
     "ios": {
       "supportsTablet": true
@@ -26,6 +26,17 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5aed76b0-9bc0-4f1a-aa8c-33ac140185a8"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/5aed76b0-9bc0-4f1a-aa8c-33ac140185a8"
     }
   }
 }

@@ -1,23 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppData, DEFAULT_APP_DATA } from '../types';
+import { migrateAppData } from './migration';
 
 const STORAGE_KEY = 'kinen_streak_data';
 
-// Load app data from storage
+// Load app data from storage with migration support
 export async function loadAppData(): Promise<AppData> {
   try {
     const json = await AsyncStorage.getItem(STORAGE_KEY);
     if (json) {
-      const data = JSON.parse(json) as AppData;
-      // Merge with defaults for any missing fields
-      return {
-        ...DEFAULT_APP_DATA,
-        ...data,
-        settings: {
-          ...DEFAULT_APP_DATA.settings,
-          ...data.settings,
-        },
-      };
+      const raw = JSON.parse(json);
+      // Migrate data if needed
+      const migrated = migrateAppData(raw);
+      return migrated;
     }
   } catch (error) {
     console.error('Failed to load app data:', error);

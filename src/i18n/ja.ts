@@ -3,24 +3,97 @@ import { Translations } from './en';
 export const ja: Translations = {
   // Home Screen
   home: {
-    welcomeTitle: '禁煙を始めますか？',
-    welcomeSubtitle: 'どれだけタバコなしで過ごせるか、チャレンジしよう。',
+    welcomeTitle: '自分との契約を結ぼう',
+    welcomeSubtitle: '目標と罰を設定して、行動をコントロールしよう。',
+    createContract: '契約を作成',
     startChallenge: 'スタート',
     days: '日',
+    blocks: 'ブロック',
+    timerDays: '日',
     timerHours: '時間',
     timerMinutes: '分',
     timerSeconds: '秒',
+    elapsedTime: '経過時間',
+    remainingTime: '残り時間',
+    showRemaining: '目標まで表示',
     bestStreak: '最長',
     totalCleanDays: '累計',
     relapses: '再発',
     iSmoked: '吸ってしまった',
+    iFailed: '失敗した',
+    feelingUrge: '今やりそう...',
     motivationText: '1秒1秒が積み重なる',
     goalProgress: '目標',
     daysLeft: '日 残り',
     goalReached: '目標達成！',
+    successRate: '成功率',
+    totalSuccesses: '成功',
+    failures: '失敗',
   },
 
-  // Start Challenge Modal
+  // Contract Creation
+  contract: {
+    selectBehavior: '何にコミットする？',
+    whatToCommit: '対象となる行動を選ぼう',
+    behaviors: {
+      quit_smoking: '禁煙',
+      quit_sns: 'SNS断ち',
+      quit_alcohol: '禁酒',
+      study: '勉強',
+      exercise: '運動',
+      custom: 'カスタム',
+    },
+    customBehavior: 'コミットメントを入力',
+    customPlaceholder: '例：ジャンクフード禁止',
+    custom: 'カスタム',
+    selectGranularity: 'どう記録する？',
+    howToTrack: '記録方法を選ぼう',
+    dayMode: '日モード',
+    dayModeDesc: '日単位で記録。指定時刻にストリークがリセット。',
+    hourMode: 'ブロックモード',
+    hourModeDesc: '時間ブロック単位で記録。短期習慣づくりに最適。',
+    selectBlockDuration: 'ブロックの長さ',
+    blockDurationDesc: '1ブロックの時間は？',
+    customDuration: 'カスタム時間',
+    customDurationDesc: '好きな時間を入力してください',
+    minutes: '分',
+    selectPunishment: '失敗したらどうする？',
+    whatIfFail: '罰を選ぼう',
+    lightPunishment: '自己罰',
+    lightPunishmentDesc: '自分にタスクを課す',
+    mediumPunishment: '寄付',
+    mediumPunishmentDesc: '関心のある団体に寄付する',
+    strongPunishment: '自動課金',
+    comingSoon: '近日公開',
+    selectSelfPenalty: '罰タスクを選ぼう',
+    selfPenaltyDesc: '失敗したら何をする？',
+    selfPenalties: {
+      exercise: '運動する',
+      cleaning: '掃除する',
+      diary: '日記を書く',
+      meditation: '瞑想する',
+      pushups: '腕立て伏せ',
+      custom: 'カスタムタスク',
+    },
+    selectDonation: '寄付先を選ぼう',
+    donationDesc: '失敗したらどこに寄付する？',
+    donations: {
+      animal: '動物保護',
+      education: '教育支援',
+      environment: '環境保護',
+      health: '医療支援',
+      disaster: '災害支援',
+    },
+    donationAmount: '寄付金額',
+    confirm: '契約内容を確認',
+    targetBehavior: '対象',
+    trackingMode: '記録方法',
+    punishment: '罰',
+    ifYouFail: '失敗したら',
+    startContract: 'スタート！',
+  },
+
+  // Start Challenge Modal (legacy)
   start: {
     reasonTitle: '禁煙したい理由は？',
     reasonSubtitle: 'モチベーションを選ぼう',
@@ -68,19 +141,49 @@ export const ja: Translations = {
     restart: '再スタート',
   },
 
+  // Urge Intervention Modal
+  urge: {
+    waitTitle: 'ちょっと待って',
+    yourContract: 'あなたの契約',
+    ifYouFail: '失敗したら',
+    tryInstead: '代わりにやること',
+    resisted: '耐えた！',
+    failed: '失敗した...',
+  },
+
+  // Punishment
+  punishment: {
+    selfPenaltyRequired: '罰を実行しよう',
+    penaltyComplete: '完了にする',
+    donationRequired: '寄付をしよう',
+    openDonationSite: '寄付サイトを開く',
+    donationComplete: '寄付した',
+    doLater: '後でやる',
+    whatNext: '次はどうする？',
+    chooseAction: '続け方を選ぼう',
+    retry: 'もう一度挑戦する',
+    startOver: '最初から始める',
+  },
+
   // History Screen
   history: {
     title: '履歴',
     noRelapses: 'まだ再発していません',
+    noFailures: 'まだ失敗していません',
     keepGoing: 'この調子！',
     relapse: '再発',
-    streakWas: '継続日数',
+    streakWas: '継続',
     days: '日',
+    blocks: 'ブロック',
+    punishmentDone: '実行済み',
+    punishmentPending: '未実行',
   },
 
   // Settings Screen
   settings: {
     title: '設定',
+    general: '一般',
+    vibration: 'バイブレーション',
     data: 'データ',
     exportData: 'データをエクスポート (JSON)',
     resetAllData: 'すべてのデータを削除',
@@ -97,11 +200,23 @@ export const ja: Translations = {
     languageSelect: '言語を選択',
   },
 
+  // Goal Completed
+  goal: {
+    completed: '目標達成！',
+    congratulations: 'おめでとう！よく頑張りました。',
+    shareToSns: 'SNSに投稿',
+    tryAgain: 'もう一度挑戦する',
+    startOver: '最初からやる',
+    shareMessage: '目標達成しました！{behavior}を{count}{unit}続けられました！ #自分縛り #JibunShibari',
+  },
+
   // Common
   common: {
     cancel: 'キャンセル',
     change: '変更',
     done: '完了',
+    back: '戻る',
+    next: '次へ',
   },
 
   // Navigation

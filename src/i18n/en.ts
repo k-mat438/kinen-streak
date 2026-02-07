@@ -1,24 +1,97 @@
 export const en = {
   // Home Screen
   home: {
-    welcomeTitle: 'Ready to quit smoking?',
-    welcomeSubtitle: 'Start your journey. Track how long you can go without a cigarette.',
+    welcomeTitle: 'Ready to commit?',
+    welcomeSubtitle: 'Create a contract with yourself. Set your goal and consequences.',
+    createContract: 'Create Contract',
     startChallenge: 'Start Now',
     days: 'days',
+    blocks: 'blocks',
+    timerDays: 'days',
     timerHours: 'hrs',
     timerMinutes: 'min',
     timerSeconds: 'sec',
+    elapsedTime: 'Time since start',
+    remainingTime: 'Time remaining',
+    showRemaining: 'Show remaining',
     bestStreak: 'Best',
     totalCleanDays: 'Total',
     relapses: 'Relapses',
     iSmoked: 'I smoked',
+    iFailed: 'I failed',
+    feelingUrge: "I'm about to...",
     motivationText: 'Every second counts',
     goalProgress: 'Goal',
     daysLeft: 'days left',
     goalReached: 'Goal reached!',
+    successRate: 'Success Rate',
+    totalSuccesses: 'Successes',
+    failures: 'Failures',
   },
 
-  // Start Challenge Modal
+  // Contract Creation
+  contract: {
+    selectBehavior: 'What do you want to commit to?',
+    whatToCommit: 'Choose your target behavior',
+    behaviors: {
+      quit_smoking: 'Quit Smoking',
+      quit_sns: 'No Social Media',
+      quit_alcohol: 'No Alcohol',
+      study: 'Study',
+      exercise: 'Exercise',
+      custom: 'Custom',
+    },
+    customBehavior: 'Describe your commitment',
+    customPlaceholder: 'e.g., No junk food',
+    custom: 'Custom',
+    selectGranularity: 'How do you want to track?',
+    howToTrack: 'Choose tracking mode',
+    dayMode: 'Day Mode',
+    dayModeDesc: 'Track by days. Streak resets at your chosen boundary time.',
+    hourMode: 'Block Mode',
+    hourModeDesc: 'Track by time blocks. Good for building short-term habits.',
+    selectBlockDuration: 'Block duration',
+    blockDurationDesc: 'How long is each block?',
+    customDuration: 'Custom duration',
+    customDurationDesc: 'Enter your preferred block length',
+    minutes: 'min',
+    selectPunishment: 'What happens if you fail?',
+    whatIfFail: 'Choose your consequence',
+    lightPunishment: 'Self-Penalty',
+    lightPunishmentDesc: 'Assign yourself a task to complete',
+    mediumPunishment: 'Donation',
+    mediumPunishmentDesc: 'Donate to a cause you care about',
+    strongPunishment: 'Auto-Charge',
+    comingSoon: 'Coming soon',
+    selectSelfPenalty: 'Choose your penalty task',
+    selfPenaltyDesc: 'What will you do if you fail?',
+    selfPenalties: {
+      exercise: 'Exercise',
+      cleaning: 'Clean a room',
+      diary: 'Write journal',
+      meditation: 'Meditate',
+      pushups: 'Push-ups',
+      custom: 'Custom task',
+    },
+    selectDonation: 'Choose donation category',
+    donationDesc: 'Where will you donate if you fail?',
+    donations: {
+      animal: 'Animal welfare',
+      education: 'Education',
+      environment: 'Environment',
+      health: 'Healthcare',
+      disaster: 'Disaster relief',
+    },
+    donationAmount: 'Donation amount',
+    confirm: 'Confirm your contract',
+    targetBehavior: 'Target',
+    trackingMode: 'Tracking',
+    punishment: 'Consequence',
+    ifYouFail: 'If you fail',
+    startContract: "Let's go!",
+  },
+
+  // Start Challenge Modal (legacy)
   start: {
     reasonTitle: 'Why do you want to quit?',
     reasonSubtitle: 'Choose your motivation',
@@ -66,19 +139,49 @@ export const en = {
     restart: 'Restart',
   },
 
+  // Urge Intervention Modal
+  urge: {
+    waitTitle: 'Wait a moment',
+    yourContract: 'Your Contract',
+    ifYouFail: 'If you fail',
+    tryInstead: 'Try this instead',
+    resisted: 'I resisted!',
+    failed: 'I failed...',
+  },
+
+  // Punishment
+  punishment: {
+    selfPenaltyRequired: 'Complete your penalty',
+    penaltyComplete: 'Mark as complete',
+    donationRequired: 'Make your donation',
+    openDonationSite: 'Open donation site',
+    donationComplete: 'I donated',
+    doLater: 'Do this later',
+    whatNext: "What's next?",
+    chooseAction: 'Choose how to continue',
+    retry: 'Try again',
+    startOver: 'Start from scratch',
+  },
+
   // History Screen
   history: {
     title: 'History',
     noRelapses: 'No relapses yet',
+    noFailures: 'No failures yet',
     keepGoing: 'Keep going!',
     relapse: 'Relapse',
     streakWas: 'streak was',
     days: 'days',
+    blocks: 'blocks',
+    punishmentDone: 'Completed',
+    punishmentPending: 'Pending',
   },
 
   // Settings Screen
   settings: {
     title: 'Settings',
+    general: 'General',
+    vibration: 'Vibration',
     data: 'Data',
     exportData: 'Export data (JSON)',
     resetAllData: 'Reset all data',
@@ -95,11 +198,23 @@ export const en = {
     languageSelect: 'Select language',
   },
 
+  // Goal Completed
+  goal: {
+    completed: 'Goal Achieved!',
+    congratulations: 'You did it! Great job staying committed.',
+    shareToSns: 'Share to SNS',
+    tryAgain: 'Try again',
+    startOver: 'Start from scratch',
+    shareMessage: 'I achieved my goal! {behavior} for {count} {unit}! #SelfBinding #JibunShibari',
+  },
+
   // Common
   common: {
     cancel: 'Cancel',
     change: 'Change',
     done: 'Done',
+    back: 'Back',
+    next: 'Next',
   },
 
   // Navigation

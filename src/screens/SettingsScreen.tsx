@@ -7,6 +7,8 @@ import {
   ScrollView,
   Alert,
   Share,
+  Switch,
+  Linking,
 } from 'react-native';
 import { useAppData } from '../hooks/useAppData';
 import { useI18n, LANGUAGE_NAMES } from '../i18n';
@@ -14,16 +16,23 @@ import { exportDataAsJson } from '../utils/storage';
 import { LanguagePicker } from '../components/LanguagePicker';
 
 export function SettingsScreen() {
-  const { data, resetData } = useAppData();
+  const { data, resetData, updateSettings } = useAppData();
   const { t, language } = useI18n();
   const [showLanguagePicker, setShowLanguagePicker] = useState(false);
+
+  const handleVibrationToggle = async (value: boolean) => {
+    await updateSettings({ vibrationEnabled: value });
+    if (value) {
+      Linking.openSettings();
+    }
+  };
 
   const handleExport = async () => {
     const json = exportDataAsJson(data);
     try {
       await Share.share({
         message: json,
-        title: 'Kinen Streak Data',
+        title: '自分縛り Data',
       });
     } catch (error) {
       Alert.alert(t.settings.exportFailed, t.settings.exportFailedMessage);
@@ -50,6 +59,20 @@ export function SettingsScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* General Section */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t.settings.general}</Text>
+        <View style={styles.settingRow}>
+          <Text style={styles.settingLabel}>{t.settings.vibration}</Text>
+          <Switch
+            value={data.settings.vibrationEnabled}
+            onValueChange={handleVibrationToggle}
+            trackColor={{ false: '#DDD', true: '#1A1A1A' }}
+            thumbColor="#FFF"
+          />
+        </View>
+      </View>
+
       {/* Language Section */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.settings.language}</Text>
@@ -81,7 +104,7 @@ export function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>{t.settings.about}</Text>
         <View style={styles.aboutContainer}>
-          <Text style={styles.aboutText}>Kinen Streak</Text>
+          <Text style={styles.aboutText}>自分縛り ~Self Binding~</Text>
           <Text style={styles.versionText}>Version 1.0.0</Text>
         </View>
       </View>
